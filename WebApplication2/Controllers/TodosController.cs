@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebApplication2.Dtos;
@@ -34,7 +35,7 @@ namespace WebApplication2.Controllers
         {
             string uri = " https://jsonplaceholder.typicode.com/todos";
             string content = JsonSerializer.Serialize(request);
-            StringContent stringContent = new(content);
+            StringContent stringContent = new(content,Encoding.UTF8,"application/json");
             HttpClient http = new();
             HttpResponseMessage message = await http.PostAsync(uri, stringContent);
             if (message.IsSuccessStatusCode)
@@ -46,6 +47,11 @@ namespace WebApplication2.Controllers
                 }
             }
             return BadRequest(new { Message = "Something went wong...." });
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update()
+        {
+
         }
     }
 }
