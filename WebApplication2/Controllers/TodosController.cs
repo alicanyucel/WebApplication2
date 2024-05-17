@@ -78,5 +78,21 @@ namespace WebApplication2.Controllers
             }
             return BadRequest("silinemedi");
         }
+        [HttpGet]
+        public async Task<IActionResult> GetById(int id)
+        {
+            string uri = $"https://jsonplaceholder.typicode.com/todos/{id}";
+            HttpClient http = new();
+            HttpResponseMessage msg = await http.GetAsync(uri);
+            if (msg.IsSuccessStatusCode)
+            {
+                Todo? todo=await msg.Content.ReadFromJsonAsync<Todo>();
+                if(todo is not null)
+                {
+                    return Ok(todo);
+                }
+            }
+            return BadRequest(new {Mesage="hata"});
+        }
     }
 }
