@@ -35,7 +35,7 @@ namespace WebApplication2.Controllers
         {
             string uri = " https://jsonplaceholder.typicode.com/todos";
             string content = JsonSerializer.Serialize(request);
-            StringContent stringContent = new(content,Encoding.UTF8,"application/json");
+            StringContent stringContent = new(content, Encoding.UTF8, "application/json");
             HttpClient http = new();
             HttpResponseMessage message = await http.PostAsync(uri, stringContent);
             if (message.IsSuccessStatusCode)
@@ -49,9 +49,34 @@ namespace WebApplication2.Controllers
             return BadRequest(new { Message = "Something went wong...." });
         }
         [HttpPut]
-        public async Task<IActionResult> Update()
+        public async Task<IActionResult> Update(UpdateTodoDto request)
         {
-
+            string Uri = $"https://jsonplaceholder.typicode.com/todos/{request.Id}";
+            string content = JsonSerializer.Serialize(Request);
+            StringContent stringContent = new(content, Encoding.UTF8, "application/json");
+            HttpClient http = new();
+            HttpResponseMessage message = await http.PostAsync(Uri, stringContent);
+            if (message.IsSuccessStatusCode)
+            {
+                Todo? todo = await message.Content.ReadFromJsonAsync<Todo>();
+                if (todo is not null)
+                {
+                    return Ok(todo);
+                }
+            }
+            return BadRequest(new { message = "birseyler ters gitti" });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            string Uri = $"https://jsonplaceholder.typicode.com/todos/{id}";
+            HttpClient http = new();
+            HttpResponseMessage message = await http.DeleteAsync(Uri);
+            if (message.IsSuccessStatusCode)
+            {
+                return Ok(new { message = "silindi" });
+            }
+            return BadRequest("silinemedi");
         }
     }
 }
